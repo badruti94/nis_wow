@@ -1,0 +1,21 @@
+.logo {
+    display: inline-block;
+    width: 125px;
+}
+
+.profile-image {
+    border-radius: 500px;
+    width: 100px;
+}
+
+.name,
+.subcribe {}
+
+.menu {
+    list-style: none;
+    font-size: 20px;
+}
+
+.menu li {
+    margin-bottom: 35px;
+}
