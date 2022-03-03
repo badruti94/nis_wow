@@ -2,10 +2,12 @@ import { Button, Col, Container, Row } from 'reactstrap'
 import './landing.css'
 import wow from './wow.png'
 import Login from '../../components/Login'
+import Register from '../../components/Register'
 import { useState } from 'react'
 
 function Landing() {
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false)
+    const [registerModalIsOpen, setRegisterModalIsOpen] = useState(false)
 
     return (
         <div className='landing' >
@@ -15,7 +17,11 @@ function Landing() {
                         <img src={wow} alt="" style={{ width: '400px' }} />
                         <p style={{ width: '400px' }} >Sign-up now and subscribe to enjoy all the cool and latest books - The best book rental service provider in Indonesia</p>
                         <div>
-                            <Button className='me-5' color='danger' >Sign Up</Button>
+                            <Button
+                                className='me-5'
+                                color='danger'
+                                onClick={() => { setRegisterModalIsOpen(true) }}
+                            >Sign Up</Button>
                             <Button
                                 className='me-5'
                                 color='secondary'
@@ -28,7 +34,12 @@ function Landing() {
             </Row>
             <Login
                 isOpen={loginModalIsOpen}
-                setIsOpen={setLoginModalIsOpen} />
+                setIsOpen={setLoginModalIsOpen}
+            />
+            <Register
+                isOpen={registerModalIsOpen}
+                setIsOpen={setRegisterModalIsOpen}
+            />
         </div>
     );
 }

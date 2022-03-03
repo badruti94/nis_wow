@@ -16,10 +16,10 @@ const Login = ({ isOpen, setIsOpen }) => {
                             <Input placeholder='Email' />
                         </FormGroup>
                         <FormGroup>
-                            <Input placeholder='Password' />
+                            <Input type='password' placeholder='Password' />
                         </FormGroup>
                         <Button className='mt-lg-3 mb-lg-3' color='danger' >Sign In</Button>
-                        <p>Don't have a account? Klik <a href="#">here</a></p>
+                        <p>Don't have an account? Klik <a href="#">here</a></p>
                     </Form>
                 </ModalBody>
             </Modal>
