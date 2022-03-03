@@ -34,17 +34,17 @@ const Profile = () => {
                                         value={'egigans@gmail.com'}
                                     />
                                     <Data
-                                        icon={'fa-envelope'}
+                                        icon={'fa-mars-and-venus'}
                                         label={'Gender'}
                                         value={'Male'}
                                     />
                                     <Data
-                                        icon={'fa-envelope'}
+                                        icon={'fa-phone '}
                                         label={'Mobile Phone'}
                                         value={'0812-8623-8911'}
                                     />
                                     <Data
-                                        icon={'fa-envelope'}
+                                        icon={'fa-map-marker'}
                                         label={'Address'}
                                         value={'Perumahan Permata Bintaro Residence C-3'}
                                     />
