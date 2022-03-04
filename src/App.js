@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Subcribe from './pages/Subcribe';
 import Profile from './pages/Profile';
 import Detail from './pages/Detail';
+import Transaction from './pages/Transaction';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route exact path='/subcribe' element={<Subcribe />} />
         <Route exact path='/profile' element={<Profile />} />
         <Route exact path='/detail/:id' element={<Detail />} />
+        <Route exact path='/transaction' element={<Transaction />} />
       </Routes>
     </Router>
   );
