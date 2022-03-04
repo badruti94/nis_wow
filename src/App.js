@@ -4,6 +4,7 @@ import Landing from './pages/landing/Landing'
 import Home from './pages/Home'
 import Subcribe from './pages/Subcribe';
 import Profile from './pages/Profile';
+import Detail from './pages/Detail';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route exact path='/home' element={<Home />} />
         <Route exact path='/subcribe' element={<Subcribe />} />
         <Route exact path='/profile' element={<Profile />} />
+        <Route exact path='/detail/:id' element={<Detail />} />
       </Routes>
     </Router>
   );
