@@ -35,10 +35,12 @@ function Landing() {
             <Login
                 isOpen={loginModalIsOpen}
                 setIsOpen={setLoginModalIsOpen}
+                setRegisterIsOpen={setRegisterModalIsOpen}
             />
             <Register
                 isOpen={registerModalIsOpen}
                 setIsOpen={setRegisterModalIsOpen}
+                setLoginIsOpen={setLoginModalIsOpen}
             />
         </div>
     );

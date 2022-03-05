@@ -1,5 +1,5 @@
-import React from 'react'
-import { Col, Container, Row, Table } from 'reactstrap'
+import React, { useState } from 'react'
+import { Card, CardBody, Col, Container, Row, Table } from 'reactstrap'
 import Sidebar from '../components/Sidebar'
 
 const transactions = [
@@ -54,6 +54,7 @@ const transactions = [
 ]
 const TableRow = (props) => {
     const { no, user, buktiTransfer, remainingActive, statusUser, statusPayment } = props
+    const [display, setDisplay] = useState('d-none')
 
     const statusUserColor = statusUser === 'Active' ? 'success' : 'danger'
     let statusPaymentColor
@@ -90,7 +91,19 @@ const TableRow = (props) => {
                 <span className={'text-' + statusPaymentColor} >{statusPayment}</span>
             </td>
             <td>
-                <i class="fa-solid fa-sort-desc fa-2x text-primary"></i>
+                <i
+                    class="fa-solid fa-sort-desc fa-2x text-primary"
+                    onMouseEnter={() => { setDisplay('') }}
+                ></i>
+                <Card
+                    className={display} style={{ position: 'absolute' }}
+                    onMouseLeave={() => { setDisplay('d-none') }}
+                >
+                    <CardBody>
+                        <div><span className='text-success' >Approve</span></div>
+                        <div><span className='text-danger' >Cancel</span></div>
+                    </CardBody>
+                </Card>
             </td>
         </tr>
     )

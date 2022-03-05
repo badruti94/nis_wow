@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert, Button, Card, Col, Container, Row } from 'reactstrap'
 import List from '../components/List'
 import Sidebar from '../components/Sidebar'
@@ -18,6 +18,16 @@ const Data = (props) => {
 }
 
 const Profile = () => {
+    const [favorites, setFavorites] = useState([])
+
+    useEffect(() => {
+        const favoritesFromLocalStorage = JSON.parse(localStorage.getItem('favorites'))
+        if (favoritesFromLocalStorage) {
+            setFavorites(favoritesFromLocalStorage)
+        }
+
+    }, [])
+
     return (
         <Container>
             <Row>
@@ -65,11 +75,14 @@ const Profile = () => {
                     </Alert>
                     <h2 className='mt-5 mb-5' >My List Book</h2>
                     <Row>
-                        <List
-                            img={'buku-4.png'}
-                            title={'Tess on the Road'}
-                            author={'Rachel Hartman'}
-                        />
+                        {favorites.map(favorite =>
+                            <List
+                                id={favorite.id}
+                                img={favorite.img}
+                                title={favorite.title}
+                                author={favorite.author}
+                            />
+                        )}
                     </Row>
                 </Col>
             </Row>

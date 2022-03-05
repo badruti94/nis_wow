@@ -20,11 +20,13 @@ const AddBook = () => {
                                 <FormGroup>
                                     <Input
                                         placeholder="Publication Date"
+                                        type='date'
                                     />
                                 </FormGroup>
                                 <FormGroup>
                                     <Input
                                         placeholder="Pages"
+                                        type='number'
                                     />
                                 </FormGroup>
                                 <FormGroup>
@@ -35,6 +37,7 @@ const AddBook = () => {
                                 <FormGroup>
                                     <Input
                                         placeholder="ISBN"
+                                        type='number'
                                     />
                                 </FormGroup>
                                 <FormGroup>
@@ -47,6 +50,7 @@ const AddBook = () => {
                                     <Input
                                         placeholder="Attache Book File"
                                         type='file'
+                                        accept='.epub'
                                     />
                                 </FormGroup>
                                 <div className='text-end mb-5' >

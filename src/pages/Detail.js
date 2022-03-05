@@ -1,8 +1,30 @@
-import React from 'react'
-import { Button, Col, Container, Row } from 'reactstrap'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { Alert, Button, Col, Container, Row } from 'reactstrap'
 import Sidebar from '../components/Sidebar'
+import books from '../data/books'
 
 const Detail = () => {
+    const params = useParams()
+    const navigate = useNavigate()
+    const index = books.findIndex(book => book.id == params.id)
+    const book = books[index]
+    const [alert, setAlert] = useState(false)
+
+    const handleFavOnClick = e => {
+        let favorites = JSON.parse(localStorage.getItem('favorites'))
+        if (!favorites) {
+            favorites = []
+        }
+        favorites.push(book)
+        localStorage.setItem('favorites', JSON.stringify(favorites))
+        setAlert(true)
+    }
+
+    const handleReadOnClick = e => {
+        navigate('/read/' + params.id)
+    }
+
     return (
         <Container>
             <Row>
@@ -11,13 +33,14 @@ const Detail = () => {
                     <Container>
                         <Container>
                             <Row className='mt-5' >
+                                {alert ? <Alert color='success' >ditambahkan ke favorit</Alert> : <></>}
                                 <Col className='col-md-5' >
-                                    <img src={'http://localhost:3000/buku-1.png'} alt="" style={{ width: '100%' }} />
+                                    <img src={'http://localhost:3000/' + book.img} alt="" style={{ width: '100%' }} />
                                 </Col>
                                 <Col>
                                     <div>
-                                        <p ><span className='text-dark fw-bold fs-1' >Tess on The Road</span> <br />
-                                            <span className='text-secondary' >Rachel Hartman</span></p>
+                                        <p ><span className='text-dark fw-bold fs-1' >{book.title} </span> <br />
+                                            <span className='text-secondary' >{book.author} </span></p>
                                     </div>
                                     <br />
                                     <div>
@@ -43,10 +66,10 @@ const Detail = () => {
                                 Returning to the fascinating world she created in the award-winning and New York Times bestselling Seraphina, Rachel Hartman introduces readers to a new character and a new quest, pushing the boundaries of genre once again in this wholly original fantasy.
                             </p>
                             <div className='text-end mb-5' >
-                                <Button className='me-3' color='danger' >
+                                <Button className='me-3' color='danger' onClick={handleFavOnClick}>
                                     Add My List <i className='fa-solid fa-bookmark' ></i>
                                 </Button>
-                                <Button className='me-3' >
+                                <Button className='me-3' onClick={handleReadOnClick} >
                                     Read Book <i className='fa-solid fa-chevron-right' ></i>
                                 </Button>
                             </div>
