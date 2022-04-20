@@ -1,65 +1,28 @@
-import React, { useState } from 'react'
-import { Card, CardBody, Col, Container, Row, Table } from 'reactstrap'
+import { useEffect, useState } from 'react'
+import { Alert, Card, CardBody, Col, Container, Row, Table } from 'reactstrap'
 import Sidebar from '../components/Sidebar'
+import { API } from '../config/api'
 
-const transactions = [
-    {
-        no: 1,
-        user: 'Radif Ganteng',
-        buktiTransfer: 'bca.jpg',
-        remainingActive: 26,
-        statusUser: 'Active',
-        statusPayment: 'Approve'
-    },
-    {
-        no: 2,
-        user: 'Haris Rahman',
-        buktiTransfer: 'bni.jpg',
-        remainingActive: 26,
-        statusUser: 'Active',
-        statusPayment: 'Approve'
-    },
-    {
-        no: 3,
-        user: 'Amin Subagiyo',
-        buktiTransfer: 'permata.jpg',
-        remainingActive: 0,
-        statusUser: 'Not Active',
-        statusPayment: 'Cancel'
-    },
-    {
-        no: 4,
-        user: 'Haris Astina',
-        buktiTransfer: 'permata.jpg',
-        remainingActive: 0,
-        statusUser: 'Not Active',
-        statusPayment: 'Pending'
-    },
-    {
-        no: 5,
-        user: 'Aziz Oni On',
-        buktiTransfer: 'bi.jpg',
-        remainingActive: 0,
-        statusUser: 'Not Active',
-        statusPayment: 'Pending'
-    },
-    {
-        no: 6,
-        user: 'Sugeng No Pants',
-        buktiTransfer: 'bni.jpg',
-        remainingActive: 0,
-        statusUser: 'Not Active',
-        statusPayment: 'Pending'
-    },
-]
+const fetchData = async (setTransactions) => {
+    const response = await API.get("/transaction");
+    setTransactions(response.data.data.transactions);
+}
+
 const TableRow = (props) => {
-    const { no, user, buktiTransfer, remainingActive, statusUser, statusPayment } = props
+    const { no, id, user, remainingActive, statusUser, statusPayment, setTransactions, setAlert } = props
+    let { buktiTransfer } = props
     const [display, setDisplay] = useState('d-none')
+
+    if (buktiTransfer.split('-').length > 1) {
+        buktiTransfer = buktiTransfer.split('-')
+        buktiTransfer.splice(0, 1)
+        buktiTransfer = buktiTransfer.join('-')
+    }
 
     const statusUserColor = statusUser === 'Active' ? 'success' : 'danger'
     let statusPaymentColor
     switch (statusPayment) {
-        case 'Approve':
+        case 'Approved':
             statusPaymentColor = 'success'
             break;
         case 'Cancel':
@@ -68,6 +31,70 @@ const TableRow = (props) => {
         default:
             statusPaymentColor = 'warning'
             break;
+    }
+
+    const handleApprove = async () => {
+        try {
+            let token;
+            try {
+                token = JSON.parse(localStorage.token)
+            } catch (error) {
+                token = localStorage.token
+
+            }
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            };
+            await API.patch('transaction/' + id, { paymentStatus: "Approved" }, config)
+            setAlert({
+                display: true,
+                color: 'success',
+                message: `${user} has been Approved`
+            })
+            fetchData(setTransactions)
+        } catch (error) {
+            setAlert({
+                display: true,
+                color: 'danger',
+                message: error.response.data.message
+            })
+        }
+        setDisplay('d-none')
+    }
+
+    const handleCancel = async () => {
+        try {
+            let token;
+            try {
+                token = JSON.parse(localStorage.token)
+            } catch (error) {
+                token = localStorage.token
+
+            }
+            const config = {
+                headers: {
+                    "Content-type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            };
+            await API.patch('transaction/' + id, { paymentStatus: "Cancel" }, config)
+            setAlert({
+                display: true,
+                color: 'success',
+                message: `${user} has been Canceled`
+            })
+            fetchData(setTransactions)
+        } catch (error) {
+            setAlert({
+                display: true,
+                color: 'danger',
+                message: error.response.data.message
+            })
+        }
+        setDisplay('d-none')
     }
 
     return (
@@ -92,7 +119,7 @@ const TableRow = (props) => {
             </td>
             <td>
                 <i
-                    class="fa-solid fa-sort-desc fa-2x text-primary"
+                    className="fa-solid fa-sort-desc fa-2x text-primary"
                     onMouseEnter={() => { setDisplay('') }}
                 ></i>
                 <Card
@@ -100,8 +127,8 @@ const TableRow = (props) => {
                     onMouseLeave={() => { setDisplay('d-none') }}
                 >
                     <CardBody>
-                        <div><span className='text-success' >Approve</span></div>
-                        <div><span className='text-danger' >Cancel</span></div>
+                        <div onClick={handleApprove} style={{ cursor: 'pointer' }} ><span className='text-success' >Approve</span></div>
+                        <div onClick={handleCancel} style={{ cursor: 'pointer' }} ><span className='text-danger' >Cancel</span></div>
                     </CardBody>
                 </Card>
             </td>
@@ -110,6 +137,21 @@ const TableRow = (props) => {
 }
 
 const Transaction = () => {
+    const [transactions, setTransactions] = useState()
+    const [alert, setAlert] = useState({
+        display: false,
+        color: '',
+        message: ""
+    })
+
+    useEffect(() => {
+        try {
+            fetchData(setTransactions)
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
+
     return (
         <Container>
             <Row>
@@ -117,6 +159,7 @@ const Transaction = () => {
                 <Col>
                     <Container>
                         <h3 className='mt-5 mb-5' >Incoming Transaction</h3>
+                        {alert.display ? <Alert color={alert.color} >{alert.message}</Alert> : <></>}
                         <Table striped borderless>
                             <thead className='text-danger' >
                                 <tr>
@@ -144,15 +187,18 @@ const Transaction = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {transactions.map(transaction => <TableRow
-                                    no={transaction.no}
-                                    user={transaction.user}
-                                    buktiTransfer={transaction.buktiTransfer}
-                                    remainingActive={transaction.remainingActive}
-                                    statusUser={transaction.statusUser}
-                                    statusPayment={transaction.statusPayment}
+                                {transactions && transactions.map((transaction, i) => <TableRow
+                                    key={transaction.id}
+                                    no={i + 1}
+                                    id={transaction.id}
+                                    user={transaction.users.name}
+                                    buktiTransfer={transaction.transferProof}
+                                    remainingActive={transaction.remainingStatus}
+                                    statusUser={transaction.userStatus}
+                                    statusPayment={transaction.paymentStatus}
+                                    setTransactions={setTransactions}
+                                    setAlert={setAlert}
                                 />)}
-
                             </tbody>
                         </Table>
                     </Container>

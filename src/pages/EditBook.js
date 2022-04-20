@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Alert, Button, Col, Container, Form, FormGroup, Input, Label, Row } from 'reactstrap'
 import Sidebar from '../components/Sidebar'
 import { API } from '../config/api'
 
-const AddBook = () => {
+const EditBook = () => {
     const [img, setImg] = useState()
     const [alert, setAlert] = useState({
         display: false,
         color: '',
-        message: '',
+        message: ''
     })
     const [form, setForm] = useState({
         title: "",
@@ -20,6 +21,26 @@ const AddBook = () => {
         bookFile: "",
         cover: "",
     });
+    const params = useParams()
+
+    useEffect(() => {
+        try {
+            (async () => {
+                const response = await API.get(`/book/${params.id}`);
+                setForm(response.data.data.book);
+                setForm({
+                    title: response.data.data.book.title,
+                    publicationDate: response.data.data.book.publicationDateYmd,
+                    pages: response.data.data.book.pages,
+                    author: response.data.data.book.author,
+                    isbn: response.data.data.book.isbn,
+                    about: response.data.data.book.about,
+                })
+            })()
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
 
     const handleOnChange = e => {
         setForm({
@@ -57,31 +78,20 @@ const AddBook = () => {
         formData.set("author", form.author);
         formData.set("isbn", form.isbn);
         formData.set("about", form.about);
-        if (form.bookFile != "" && form.bookFile != null) {
+        if (form.bookFile) {
             formData.set("bookFile", form.bookFile[0], form.bookFile[0].name);
         }
-        if (form.cover != "" && form.cover != null) {
+        if (form.cover) {
             formData.set("cover", form.cover[0], form.cover[0].name);
         }
 
         (async () => {
             try {
-                await API.post("/book", formData, config)
-                setForm({
-                    title: "",
-                    publicationDate: "",
-                    pages: "",
-                    author: "",
-                    isbn: "",
-                    about: "",
-                    bookFile: null,
-                    cover: null,
-                })
-                setImg(null)
+                await API.put("/book/" + params.id, formData, config)
                 setAlert({
                     display: true,
                     color: 'success',
-                    message: 'Added successfully'
+                    message: 'Updated successfully'
                 })
             } catch (error) {
                 setAlert({
@@ -100,7 +110,7 @@ const AddBook = () => {
                 <Col>
                     <Container>
                         <Container>
-                            <h3 className='mt-5 mb-5' >Add Book</h3>
+                            <h3 className='mt-5 mb-5' >Edit Book</h3>
                             {alert.display ? <Alert color={alert.color} >{alert.message}</Alert> : <></>}
                             <Form onSubmit={handleSubmit} >
                                 <FormGroup>
@@ -177,7 +187,7 @@ const AddBook = () => {
                                     />
                                 </FormGroup>
                                 <div className='text-end mb-5' >
-                                    <Button color='danger' type='submit' >Add Book <i className='fa-solid fa-book' ></i> </Button>
+                                    <Button color='danger' type='submit' >Update Book <i className='fa-solid fa-book' ></i> </Button>
                                 </div>
                             </Form>
                         </Container>
@@ -188,4 +198,4 @@ const AddBook = () => {
     )
 }
 
-export default AddBook
+export default EditBook

@@ -1,14 +1,23 @@
-import React, { useState } from 'react'
-import { Alert, Card, CardBody, Col, Container, Row } from 'reactstrap'
+import React, { useEffect, useState } from 'react'
+import { Alert, Card, Col, Container, Row } from 'reactstrap'
 import List from '../components/List'
 import Sidebar from '../components/Sidebar'
-import books from '../data/books'
-import subcribeNow from './subcribe-now.png'
-
-
+import { API } from '../config/api'
 
 const Home = () => {
     const [alert, setAlert] = useState(false)
+    const [books, setBooks] = useState()
+
+    useEffect(() => {
+        try {
+            (async () => {
+                const response = await API.get("/books");
+                setBooks(response.data.data.books);
+            })()
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
 
     return (
         <Container>
@@ -16,16 +25,17 @@ const Home = () => {
                 <Sidebar />
                 <Col>
                     <Card className='shadow mt-5' style={{ width: '900px' }} >
-                        <img src={subcribeNow} alt="" />
+                        <img src="/subcribe-now.png" alt="" />
                     </Card>
                     <h2 className='mt-4 mb-4' >List Book</h2>
-                    {alert ? <Alert color='danger'>please make payment to read latest book</Alert> : <></>}
-                    <Row>
+                    {alert ? <Alert color='danger'>Please make payment to read latest book</Alert> : <></>}
+                    <Row style={{ width: '900px' }} >
                         {
-                            books.map(book =>
+                            books && books.map(book =>
                                 <List
+                                    key={book.id}
                                     id={book.id}
-                                    img={book.img}
+                                    img={book.cover}
                                     title={book.title}
                                     author={book.author}
                                     setAlert={setAlert}
